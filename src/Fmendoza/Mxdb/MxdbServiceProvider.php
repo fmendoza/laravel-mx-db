@@ -28,7 +28,45 @@ class MxdbServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		$this->registerState();
+		$this->registerCity();
+	    $this->registerCommands();
+	}
+
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function registerState()
+	{
+	    $this->app->bind('state', function($app)
+	    {
+	        return new State;
+	    });
+	}
+
+	public function registerCity()
+	{
+	    $this->app->bind('city', function($app)
+	    {
+	        return new City;
+	    });
+	}
+	
+	/**
+	 * Register the artisan commands.
+	 *
+	 * @return void
+	 */
+	protected function registerCommands()
+	{		    
+	    $this->app['command.mxdb'] = $this->app->share(function($app)
+	    {
+	        return new MigrationCommand;
+	    });
+	    
+	    $this->commands('command.mxdb');
 	}
 
 	/**
@@ -38,7 +76,7 @@ class MxdbServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return array('state', 'city');
 	}
 
 }
